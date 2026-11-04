@@ -504,6 +504,7 @@ aside.summary{position:sticky;top:96px}
     <div class="eyebrow">Staff only · Mixing bench</div>
     <h2 style="font-weight:850;font-stretch:115%;font-size:clamp(28px,3.4vw,42px);margin-top:8px">Marie's colour-matching diary</h2>
     <p style="color:var(--muted);max-width:44em">No more paper diary. Online bookings appear here as soon as they're confirmed. New ones are highlighted.</p>
+    <p class="mono" style="font-size:12px;letter-spacing:.06em;color:var(--green);margin:0"><span class="dot" style="background:#2F7A4E;box-shadow:0 0 0 4px rgba(47,122,78,.15)"></span><span id="liveState">Showing bookings made in this browser</span></p>
     <div class="diary"><table id="diaryTable"></table></div>
   </div>
 </div>
@@ -518,7 +519,7 @@ aside.summary{position:sticky;top:96px}
     <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
       <a href="#home">Home</a><a href="#book">Book colour matching</a><a href="#diary">Marie's diary (staff)</a>
     </div>
-    <div class="fiction" style="flex-basis:100%">Hartwell's is a fictional business created for the City of Wolverhampton College AI Acceleration Programme. Bookings made here are stored only in this browser.</div>
+    <div class="fiction" style="flex-basis:100%">Hartwell's is a fictional business created for the City of Wolverhampton College AI Acceleration Programme. Bookings made here go to a demo diary; phone numbers are never stored.</div>
   </div>
 </footer>
 
@@ -585,9 +586,28 @@ aside.summary{position:sticky;top:96px}
   add(firstOf(6),"11:00","Ellie M. · wallpaper");
   add(firstOf(6),"13:00","Gary B. · paint lid");
   add(lastOf(5),"15:00","Aisha N. · wall chip");
+  /* Shared diary: a Google Apps Script web app that saves bookings to a Google Sheet. */
+  const API="https://script.google.com/macros/s/AKfycbzNh4bqELKen3sylsm-kpBDkepYIwCa0shuVigMcgILA_GEN1OkNfasIlkRzJlesHyQjA/exec";
+  const live=/^https:\/\/script\.google\.com\//.test(API);
+  let remote=[], remoteOK=false;
   let mine=[];
   try{mine=JSON.parse(localStorage.getItem("hw-bookings")||"[]")}catch(e){mine=[]}
-  function bookingsFor(k){const b=Object.assign({},seed[k]||{});mine.filter(m=>m.date===k).forEach(m=>b[m.time]={who:m.name+" · "+m.sample,src:"online",ref:m.ref});return b;}
+  const shortName=n=>{const p=String(n).trim().split(/\s+/);return p.length>1?p[0]+" "+p[p.length-1][0].toUpperCase()+".":p[0];};
+  function bookingsFor(k){
+    const b=Object.assign({},seed[k]||{});
+    remote.filter(r=>r.date===k).forEach(r=>b[r.time]={who:r.who+" · "+r.sample,src:"online",ref:r.ref});
+    mine.filter(m=>m.date===k&&!remote.some(r=>r.ref===m.ref)).forEach(m=>b[m.time]={who:shortName(m.name)+" · "+m.sample,src:"online",ref:m.ref});
+    return b;
+  }
+  async function loadRemote(){
+    if(!live)return;
+    try{
+      const r=await fetch(API,{cache:"no-store"});const j=await r.json();
+      if(j&&j.ok){remote=j.bookings||[];remoteOK=true;rerender();}
+    }catch(e){remoteOK=false;}
+    const st=document.getElementById("liveState");if(st)st.textContent=remoteOK?"Live from the shop's Google Sheet":"Showing bookings made in this browser";
+  }
+  function rerender(){const v=current();if(v==="book"){renderDays();renderSlots();}if(v==="diary")renderDiary();}
   const longDate=d=>DAYS[d.getDay()]+" "+d.getDate()+" "+MONL[d.getMonth()];
 
   /* ---------- booking UI ---------- */
@@ -652,13 +672,27 @@ aside.summary{position:sticky;top:96px}
     review.classList.add("show");step(3);review.scrollIntoView({behavior:"smooth",block:"start"});
   });
   document.getElementById("editBtn").addEventListener("click",()=>{review.classList.remove("show");step(2);});
-  document.getElementById("bookForm").addEventListener("submit",ev=>{
+  let saving=false;
+  document.getElementById("bookForm").addEventListener("submit",async ev=>{
     ev.preventDefault();
-    if(!review.classList.contains("show"))return;
+    if(!review.classList.contains("show")||saving)return;
+    await loadRemote();
     if(bookingsFor(state.date)[state.time]){toast("Sorry, that slot has just gone. Please choose another.");review.classList.remove("show");renderSlots();return;}
     const ref="HW-"+(4000+Math.floor(Math.random()*5000));
     const b={ref,date:state.date,time:state.time,name:val("custName"),phone:val("custPhone"),sample:val("sample"),finish:val("finish"),reminder:document.getElementById("reminder").checked,at:Date.now()};
+    const btn=document.getElementById("confirmBtn");saving=true;btn.disabled=true;btn.textContent="Confirming…";
+    if(live){
+      try{
+        const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),9000);
+        // Phone number is never sent: only first name, last initial and the booking.
+        const r=await fetch(API,{method:"POST",body:JSON.stringify({ref,date:b.date,time:b.time,who:shortName(b.name),sample:b.sample,finish:b.finish,reminder:b.reminder}),signal:ctl.signal});
+        clearTimeout(tm);const j=await r.json();
+        if(j&&j.ok===false&&j.error==="taken"){saving=false;btn.disabled=false;btn.textContent="Confirm booking";toast("Sorry, that slot has just gone. Please choose another.");review.classList.remove("show");await loadRemote();return;}
+        if(j&&j.ok)remote.push({ref,date:b.date,time:b.time,who:shortName(b.name),sample:b.sample,finish:b.finish,reminder:b.reminder?"Yes":"No"});
+      }catch(e){/* offline: keep the booking in this browser */}
+    }
     mine.push(b);try{localStorage.setItem("hw-bookings",JSON.stringify(mine))}catch(e){}
+    saving=false;btn.disabled=false;btn.textContent="Confirm booking";
     lastRef=ref;showConfirm(b);location.hash="booked";
   });
   let lastRef=null;
@@ -689,6 +723,8 @@ aside.summary{position:sticky;top:96px}
 
   /* ---------- views ---------- */
   const views=["home","book","booked","diary"];
+  function current(){let v=(location.hash||"#home").slice(1);if(v.startsWith("home-"))v="home";return views.includes(v)?v:"home";}
+  let poll=null;
   function route(){
     let v=(location.hash||"#home").slice(1);
     let anchor=null;
@@ -697,8 +733,9 @@ aside.summary{position:sticky;top:96px}
     if(v==="booked"&&!lastRef){const last=mine[mine.length-1];if(last){lastRef=last.ref;showConfirm(last);}else v="book";}
     document.querySelectorAll("[data-view]").forEach(el=>el.classList.toggle("active",el.dataset.view===v));
     document.querySelectorAll("[data-nav]").forEach(a=>{if(a.dataset.nav===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});
-    if(v==="book"){renderDays();renderSlots();renderSummary();}
-    if(v==="diary")renderDiary();
+    if(v==="book"){renderDays();renderSlots();renderSummary();loadRemote();}
+    if(v==="diary"){renderDiary();loadRemote();}
+    clearInterval(poll);if(v==="diary"&&live)poll=setInterval(loadRemote,8000);
     if(anchor){const el=document.getElementById(anchor);if(el)setTimeout(()=>el.scrollIntoView({behavior:"smooth"}),30);}
     else window.scrollTo(0,0);
   }
