@@ -596,14 +596,15 @@ aside.summary{position:sticky;top:96px}
   function bookingsFor(k){
     const b=Object.assign({},seed[k]||{});
     remote.filter(r=>r.date===k).forEach(r=>b[r.time]={who:r.who+" · "+r.sample,src:"online",ref:r.ref});
-    mine.filter(m=>m.date===k&&!remote.some(r=>r.ref===m.ref)).forEach(m=>b[m.time]={who:shortName(m.name)+" · "+m.sample,src:"online",ref:m.ref});
+    // The Sheet is the source of truth when reachable; this browser's copies are only an offline fallback.
+    if(!remoteOK)mine.filter(m=>m.date===k).forEach(m=>b[m.time]={who:shortName(m.name)+" · "+m.sample,src:"online",ref:m.ref});
     return b;
   }
   async function loadRemote(){
     if(!live)return;
     try{
       const r=await fetch(API,{cache:"no-store"});const j=await r.json();
-      if(j&&j.ok){remote=j.bookings||[];remoteOK=true;rerender();}
+      if(j&&j.ok){remote=j.bookings||[];remoteOK=true;mine=mine.filter(m=>remote.some(r=>r.ref===m.ref));try{localStorage.setItem("hw-bookings",JSON.stringify(mine))}catch(e){}rerender();}
     }catch(e){remoteOK=false;}
     const st=document.getElementById("liveState");if(st)st.textContent=remoteOK?"Live from the shop's Google Sheet":"Showing bookings made in this browser";
   }
