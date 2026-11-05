@@ -230,6 +230,45 @@ aside.summary{position:sticky;top:96px}
 .bk.new{background:var(--brass-soft);border-left-color:var(--brass);animation:pulse 1.6s ease 2}
 @keyframes pulse{50%{box-shadow:0 0 0 4px rgba(192,138,45,.35)}}
 @media (prefers-reduced-motion:reduce){.bk.new{animation:none}}
+/* ---------- staff hub ---------- */
+.hub-top{background:var(--ink);color:#fff}
+.hub-top .wrap{padding-block:34px 30px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:end}
+.hub-top h1{font-weight:900;font-stretch:118%;font-size:clamp(30px,4.4vw,52px);line-height:.98;text-transform:uppercase}
+.hub-top p{color:#C9D2CD;margin:10px 0 0;max-width:40em}
+.hub-top .src{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:#9FD6B5}
+.hub{padding-block:28px 80px;display:grid;gap:18px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0;text-decoration:none;display:block}
+.kpi small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kpi b{display:block;font-family:var(--f-display);font-weight:850;font-stretch:110%;font-size:34px;line-height:1.1;margin-top:6px}
+.kpi span{font-size:13px;color:var(--muted)}
+.kpi.warn{border-color:#E6B9A8;background:#FBF1EC}.kpi.warn b{color:var(--alert)}
+@media (max-width:980px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.hub-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:980px){.hub-grid{grid-template-columns:1fr}}
+.hcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;min-width:0}
+.hcard h2{font-size:21px;font-weight:800;font-stretch:108%;display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.hcard h2 small{font-family:var(--f-mono);font-size:12px;font-weight:400;color:var(--muted);letter-spacing:.04em}
+.hcard p.sub{margin:6px 0 0;color:var(--muted);font-size:14px}
+.tbl{overflow-x:auto;margin-top:12px}
+.tbl table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;min-width:480px}
+.tbl th{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);background:#F7F9F7}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td:first-child{white-space:nowrap}
+#quotesT table{min-width:0}
+#stockT td:first-child{white-space:normal}
+.note{display:inline-block;background:#FBEBD3;color:#7A4E08;border-radius:8px;padding:3px 8px;font-size:13px}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.n{text-align:right;font-family:var(--f-mono)}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;padding:3px 8px;border-radius:999px;background:#E8F0EB;color:var(--ok);white-space:nowrap}
+.pill.low{background:#FBEBD3;color:#8A5A0B}.pill.out,.pill.alert{background:#F6DED6;color:var(--alert)}.pill.grey{background:var(--taken);color:var(--muted)}
+.shoebox{background:var(--brass-soft);border:1px dashed var(--brass);border-radius:var(--r);padding:20px 22px;color:#4D3A15}
+.shoebox h2{font-size:21px;font-weight:800;color:var(--green-deep)}
+.shoebox p{margin:8px 0 0}
+.mini{display:grid;gap:10px;margin-top:12px}
+.mini div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:8px;font-size:15px}
+.mini div:last-child{border-bottom:0}
+.mini b{font-weight:600}
 [data-view]{display:none}
 [data-view].active{display:block}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(16px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;transition:transform .3s ease,opacity .3s ease;z-index:20;opacity:0;visibility:hidden;pointer-events:none}
@@ -506,6 +545,37 @@ aside.summary{position:sticky;top:96px}
     <p style="color:var(--muted);max-width:44em">No more paper diary. Online bookings appear here as soon as they're confirmed. New ones are highlighted.</p>
     <p class="mono" style="font-size:12px;letter-spacing:.06em;color:var(--green);margin:0"><span class="dot" style="background:#2F7A4E;box-shadow:0 0 0 4px rgba(47,122,78,.15)"></span><span id="liveState">Showing bookings made in this browser</span></p>
     <div class="diary"><table id="diaryTable"></table></div>
+    <p style="margin-top:18px"><a class="btn btn-ghost" href="#hub">Open the Staff Hub</a></p>
+  </div>
+</div>
+
+<!-- ================= STAFF HUB ================= -->
+<div data-view="hub">
+  <div class="hub-top">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow" style="color:#E5C17E">Staff only · Back office</div>
+        <h1 style="margin-top:10px">Staff Hub</h1>
+        <p>Everything Dave checks on a Monday morning, in one place: bookings, stock, click &amp; collect, trade accounts and quotes.</p>
+      </div>
+      <div class="src"><span class="dot"></span><span id="hubState">Loading…</span></div>
+    </div>
+  </div>
+  <div class="wrap hub">
+    <div class="kpis" id="kpis"></div>
+    <div class="hub-grid">
+      <div style="display:grid;gap:18px;min-width:0">
+        <section class="hcard" id="hub-stock" aria-labelledby="hs1"><h2 id="hs1">Stock levels <small>counted by hand, Sunday evening</small></h2><p class="sub">Lines at or below their reorder level are flagged.</p><div class="tbl" id="stockT"></div></section>
+        <section class="hcard" id="hub-orders" aria-labelledby="hs2"><h2 id="hs2">Click &amp; collect <small>orders arrive in the shop inbox</small></h2><div class="tbl" id="ordersT"></div></section>
+      </div>
+      <div style="display:grid;gap:18px;min-width:0">
+        <section class="hcard" aria-labelledby="hs4"><h2 id="hs4">Colour matching <small>Marie, Thu–Sat</small></h2><div class="mini" id="cmMini"></div><p class="sub" style="margin-top:10px"><a href="#diary">Open Marie's diary</a></p></section>
+        <section class="hcard" id="hub-quotes" aria-labelledby="hs5"><h2 id="hs5">Trade quote requests <small>usual turnaround: 2 days</small></h2><div class="tbl" id="quotesT"></div></section>
+        <section class="hcard" aria-labelledby="hs6"><h2 id="hs6">Waiting for Sam</h2><div class="mini" id="adminMini"></div></section>
+        <section class="shoebox" aria-labelledby="hs7"><h2 id="hs7">Handy Card members</h2><p><b style="font-family:var(--f-display);font-size:30px">1,400</b> sign-up slips in a shoebox under the counter.</p><p>Names, addresses and phone numbers, handwritten. Not on any computer. Nobody has ever contacted them, and the slips don't say whether people agreed to marketing.</p></section>
+      </div>
+    </div>
+    <section class="hcard" id="hub-accounts" aria-labelledby="hs3"><h2 id="hs3">Trade accounts overdue <small>30+ days</small></h2><p class="sub">Dave chases these "when he remembers": about 45 minutes a week. Check the notes before chasing anyone.</p><div class="tbl" id="accountsT"></div></section>
   </div>
 </div>
 </main>
@@ -517,9 +587,9 @@ aside.summary{position:sticky;top:96px}
       <div>Great Bridge Road, Bilston · Family-run since 1987</div>
     </div>
     <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
-      <a href="#home">Home</a><a href="#book">Book colour matching</a><a href="#diary">Marie's diary (staff)</a>
+      <a href="#home">Home</a><a href="#book">Book colour matching</a><a href="#diary">Marie's diary (staff)</a><a href="#hub">Staff Hub</a>
     </div>
-    <div class="fiction" style="flex-basis:100%">Hartwell's is a fictional business created for the City of Wolverhampton College AI Acceleration Programme. Bookings made here go to a demo diary; phone numbers are never stored.</div>
+    <div class="fiction" style="flex-basis:100%">Hartwell's is a fictional business created for the City of Wolverhampton College AI Acceleration Programme. Every business, person and figure on this site is invented. Bookings made here go to a demo diary; phone numbers are never stored.</div>
   </div>
 </footer>
 
@@ -603,12 +673,12 @@ aside.summary{position:sticky;top:96px}
   async function loadRemote(){
     if(!live)return;
     try{
-      const r=await fetch(API,{cache:"no-store"});const j=await r.json();
-      if(j&&j.ok){remote=j.bookings||[];remoteOK=true;mine=mine.filter(m=>remote.some(r=>r.ref===m.ref));try{localStorage.setItem("hw-bookings",JSON.stringify(mine))}catch(e){}rerender();}
+      const r=await fetch(API+"?hub=1",{cache:"no-store"});const j=await r.json();
+      if(j&&j.ok){remote=j.bookings||[];remoteOK=true;if(j.hub&&j.hub.stock&&j.hub.stock.length){hub=Object.assign({},HUB_SEED,j.hub);hubLive=true;}mine=mine.filter(m=>remote.some(r=>r.ref===m.ref));try{localStorage.setItem("hw-bookings",JSON.stringify(mine))}catch(e){}rerender();}
     }catch(e){remoteOK=false;}
     const st=document.getElementById("liveState");if(st)st.textContent=remoteOK?"Live from the shop's Google Sheet":"Showing bookings made in this browser";
   }
-  function rerender(){const v=current();if(v==="book"){renderDays();renderSlots();}if(v==="diary")renderDiary();}
+  function rerender(){const v=current();if(v==="book"){renderDays();renderSlots();}if(v==="diary")renderDiary();if(v==="hub")renderHub();}
   const longDate=d=>DAYS[d.getDay()]+" "+d.getDate()+" "+MONL[d.getMonth()];
 
   /* ---------- booking UI ---------- */
@@ -722,22 +792,105 @@ aside.summary{position:sticky;top:96px}
     TIMES.forEach(tm=>dates.forEach(d=>{const b=bookingsFor(key(d))[tm];if(b){cells[i].textContent=b.who+(b.src==="online"?" · online":"");i++;}}));
   }
 
+  /* ---------- staff hub ---------- */
+  // Fallback data. When the shop's Google Sheet has the hub tabs, the live data replaces this.
+  const HUB_SEED={
+    stock:[
+      {"Item":"Own-brand matt emulsion, white, 2.5 L","SKU":"PT-0101","On shelf":"5","Reorder at":"12","Sold last week":"19","Supplier":"Midland Paint Supplies"},
+      {"Item":"Compost, 50 L","SKU":"GD-0310","On shelf":"7","Reorder at":"20","Sold last week":"34","Supplier":"GreenGrow Wholesale"},
+      {"Item":"Wood screws, box of 500","SKU":"FX-0222","On shelf":"0","Reorder at":"10","Sold last week":"16","Supplier":"FixPro Trade"},
+      {"Item":"Dulux matt emulsion, 2.5 L","SKU":"PT-0140","On shelf":"14","Reorder at":"8","Sold last week":"9","Supplier":"Midland Paint Supplies"},
+      {"Item":"Calor propane 13 kg (swap)","SKU":"GS-0013","On shelf":"3","Reorder at":"4","Sold last week":"5","Supplier":"Calor"},
+      {"Item":"Sawn treated timber 38×63, 2.4 m","SKU":"TM-0063","On shelf":"46","Reorder at":"30","Sold last week":"28","Supplier":"Black Country Timber"},
+      {"Item":"MDF sheet, 12 mm","SKU":"TM-0412","On shelf":"11","Reorder at":"6","Sold last week":"4","Supplier":"Black Country Timber"},
+      {"Item":"18 V cordless drill","SKU":"TL-0180","On shelf":"4","Reorder at":"2","Sold last week":"1","Supplier":"FixPro Trade"}
+    ],
+    orders:[
+      {"Ref":"CC-2291","Received":"Yesterday 19:42","Customer":"Lewis T.","Items":"2 × white matt 2.5 L, roller set","Value":"£41.97","Collect":"Today 09:30","Status":"Unseen"},
+      {"Ref":"CC-2290","Received":"Yesterday 16:05","Customer":"Sandra O.","Items":"Compost × 3, trowel","Value":"£24.98","Collect":"Today 12:00","Status":"Picked"},
+      {"Ref":"CC-2288","Received":"Saturday 11:20","Customer":"Trade: Tipton Joinery","Items":"CLS 38×89 × 20","Value":"£144.00","Collect":"Today 08:00","Status":"Picked"},
+      {"Ref":"CC-2285","Received":"Friday 15:47","Customer":"Mo A.","Items":"Key blanks × 4","Value":"£18.00","Collect":"Collected","Status":"Collected"}
+    ],
+    accounts:[
+      {"Business":"Black Country Roofing","Contact":"accounts@bcroofing.example","Owed":"1240","Days overdue":"64","Last chased":"6 weeks ago","Note":""},
+      {"Business":"Tipton Joinery","Contact":"office@tiptonjoinery.example","Owed":"860","Days overdue":"45","Last chased":"Never","Note":"Good customer. Collecting an order today"},
+      {"Business":"Bradley Plumbing & Heating","Contact":"admin@bradleyph.example","Owed":"520","Days overdue":"38","Last chased":"Never","Note":""},
+      {"Business":"Coseley Kitchens","Contact":"hello@coseleykitchens.example","Owed":"410","Days overdue":"52","Last chased":"3 weeks ago","Note":"Dave agreed a payment plan: £100 a month. Do not chase"},
+      {"Business":"Willenhall Fencing","Contact":"accounts@willenhallfencing.example","Owed":"330","Days overdue":"33","Last chased":"Never","Note":""},
+      {"Business":"Darlaston Decorators","Contact":"jobs@darlastondecor.example","Owed":"280","Days overdue":"41","Last chased":"Never","Note":""},
+      {"Business":"Moxley Maintenance","Contact":"admin@moxleymaint.example","Owed":"240","Days overdue":"35","Last chased":"Never","Note":""},
+      {"Business":"Ettingshall Electrical","Contact":"office@ettelectrical.example","Owed":"190","Days overdue":"31","Last chased":"Never","Note":""},
+      {"Business":"Princes End Landscapes","Contact":"info@princesend.example","Owed":"130","Days overdue":"90","Last chased":"2 months ago","Note":"Disputed: says 2 bags of cement were missing. Dave to sort"}
+    ],
+    quotes:[
+      {"Ref":"Q-118","Received":"2 days ago","Customer":"Willenhall Fencing","Job":"30 m close-board fence run: posts, panels, gravel boards, postcrete","Est. value":"£780","Status":"Waiting"},
+      {"Ref":"Q-119","Received":"Yesterday","Customer":"Sedgley Home Improvements","Job":"Kitchen refit materials: carcass board, worktop, fixings, sealant","Est. value":"£640","Status":"Waiting"},
+      {"Ref":"Q-120","Received":"This morning","Customer":"A. Begum (private)","Job":"Shed base and timber frame, 3 m × 2 m","Est. value":"£310","Status":"Waiting"}
+    ],
+    admin:[
+      {"Item":"Supplier invoices to type into the spreadsheet","Value":"11 (about 3 hours)"},
+      {"Item":"Colour-matching no-shows last month","Value":"4"},
+      {"Item":"This week's promo board offer","Value":"Not chosen yet"},
+      {"Item":"Facebook page: last post","Value":"14 March"}
+    ]
+  };
+  let hub=HUB_SEED, hubLive=false;
+  const num=s=>parseFloat(String(s).replace(/[^0-9.\-]/g,""))||0;
+  const gbp=n=>"£"+n.toLocaleString("en-GB",{minimumFractionDigits:0,maximumFractionDigits:2});
+  function el(tag,attrs,text){const e=document.createElement(tag);if(attrs)Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!=null)e.textContent=text;return e;}
+  function table(host,cols,rows,cellFn){
+    host.innerHTML="";const t=el("table"),th=el("thead"),tr=el("tr");
+    cols.forEach(c=>tr.appendChild(el("th",c.n?{style:"text-align:right"}:null,c.h)));th.appendChild(tr);t.appendChild(th);
+    const tb=el("tbody");rows.forEach(r=>{const row=el("tr");cols.forEach(c=>{const td=el("td",c.n?{class:"n"}:null);const v=cellFn?cellFn(c,r):null;if(v instanceof Node)td.appendChild(v);else td.textContent=v!=null?v:(r[c.k]||"");row.appendChild(td);});tb.appendChild(row);});
+    t.appendChild(tb);host.appendChild(t);
+  }
+  const pill=(txt,cls)=>el("span",{class:"pill"+(cls?" "+cls:"")},txt);
+  function renderHub(){
+    const st=document.getElementById("hubState");if(st)st.textContent=hubLive?"Live from the shop's Google Sheet":"Demo data (Sheet not connected)";
+    const stock=(hub.stock||[]).map(r=>Object.assign({},r,{_s:num(r["On shelf"])===0?"OUT":(num(r["On shelf"])<=num(r["Reorder at"])?"LOW":"OK")}));
+    const low=stock.filter(r=>r._s!=="OK");
+    const orders=hub.orders||[], waiting=orders.filter(o=>!/collected/i.test(o.Status)), unseen=orders.filter(o=>/unseen/i.test(o.Status));
+    const acc=hub.accounts||[], owed=acc.reduce((a,r)=>a+num(r.Owed),0);
+    const quotes=(hub.quotes||[]).filter(q=>!/sent|done/i.test(q.Status||""));
+    // colour matching: next 7 days from the live diary
+    const soon=dates.filter(d=>(d-now)/864e5<7);let booked=0,online=0,remYes=0;
+    soon.forEach(d=>{const b=bookingsFor(key(d));Object.values(b).forEach(x=>{booked++;if(x.src==="online")online++;});});
+    remote.forEach(r=>{if(soon.some(d=>key(d)===r.date)&&/yes/i.test(r.reminder||""))remYes++;});
+    const k=document.getElementById("kpis");k.innerHTML="";
+    const kpi=(label,big,sub,warn,href)=>{const a=el("a",{class:"kpi"+(warn?" warn":""),href:href});a.appendChild(el("small",null,label));a.appendChild(el("b",null,big));a.appendChild(el("span",null,sub));k.appendChild(a);};
+    kpi("Stock to reorder",String(low.length),low.filter(r=>r._s==="OUT").length+" out of stock",low.length>0,"#hub-stock");
+    kpi("Click & collect",String(waiting.length),unseen.length?unseen.length+" not seen yet":"all picked",unseen.length>0,"#hub-orders");
+    kpi("Overdue trade",gbp(owed),acc.length+" accounts, 30+ days",owed>0,"#hub-accounts");
+    kpi("Quotes waiting",String(quotes.length),quotes.length?"oldest: "+quotes[0].Received:"none",quotes.length>2,"#hub-quotes");
+    kpi("Colour matching",String(booked),"booked, next 7 days",false,"#diary");
+    table(document.getElementById("stockT"),[{h:"Item",k:"Item"},{h:"On shelf",k:"On shelf",n:1},{h:"Reorder at",k:"Reorder at",n:1},{h:"Sold last week",k:"Sold last week",n:1},{h:"Supplier",k:"Supplier"},{h:"Status",k:"_s"}],stock,(c,r)=>c.k==="_s"?pill(r._s==="OK"?"OK":r._s,r._s==="OUT"?"out":(r._s==="LOW"?"low":"")):null);
+    table(document.getElementById("ordersT"),[{h:"Ref",k:"Ref"},{h:"Received",k:"Received"},{h:"Customer",k:"Customer"},{h:"Items",k:"Items"},{h:"Value",k:"Value",n:1},{h:"Collect",k:"Collect"},{h:"Status",k:"Status"}],orders,(c,r)=>c.k==="Status"?pill(r.Status,/unseen/i.test(r.Status)?"alert":(/collected/i.test(r.Status)?"grey":"")):null);
+    table(document.getElementById("accountsT"),[{h:"Business",k:"Business"},{h:"Owed",k:"Owed",n:1},{h:"Days overdue",k:"Days overdue",n:1},{h:"Last chased",k:"Last chased"},{h:"Contact",k:"Contact"},{h:"Note",k:"Note"}],acc,(c,r)=>c.k==="Owed"?gbp(num(r.Owed)):(c.k==="Note"&&r.Note?el("span",{class:"note"},r.Note):null));
+    table(document.getElementById("quotesT"),[{h:"Ref",k:"Ref"},{h:"Customer",k:"Customer"},{h:"Job",k:"Job"},{h:"Est.",k:"Est. value",n:1},{h:"Received",k:"Received"}],hub.quotes||[]);
+    const cm=document.getElementById("cmMini");cm.innerHTML="";
+    [["Booked, next 7 days",booked+" of "+soon.length*TIMES.length+" slots"],["Booked online",String(online)],["Reminder texts agreed (online)",remYes+" of "+online]].forEach(([a,b])=>{const d=el("div");d.appendChild(el("span",null,a));d.appendChild(el("b",null,b));cm.appendChild(d);});
+    const ad=document.getElementById("adminMini");ad.innerHTML="";
+    (hub.admin||[]).forEach(r=>{const d=el("div");d.appendChild(el("span",null,r.Item));d.appendChild(el("b",null,r.Value));ad.appendChild(d);});
+  }
+
   /* ---------- views ---------- */
-  const views=["home","book","booked","diary"];
-  function current(){let v=(location.hash||"#home").slice(1);if(v.startsWith("home-"))v="home";return views.includes(v)?v:"home";}
+  const views=["home","book","booked","diary","hub"];
+  function current(){let v=(location.hash||"#home").slice(1);if(v.startsWith("home-"))v="home";if(v.startsWith("hub-"))v="hub";return views.includes(v)?v:"home";}
   let poll=null;
   function route(){
     let v=(location.hash||"#home").slice(1);
     let anchor=null;
     if(v.startsWith("home-")){anchor=v;v="home";}
+    if(v.startsWith("hub-")){anchor=v;v="hub";}
     if(!views.includes(v))v="home";
     if(v==="booked"&&!lastRef){const last=mine[mine.length-1];if(last){lastRef=last.ref;showConfirm(last);}else v="book";}
     document.querySelectorAll("[data-view]").forEach(el=>el.classList.toggle("active",el.dataset.view===v));
     document.querySelectorAll("[data-nav]").forEach(a=>{if(a.dataset.nav===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});
     if(v==="book"){renderDays();renderSlots();renderSummary();loadRemote();}
     if(v==="diary"){renderDiary();loadRemote();}
-    clearInterval(poll);if(v==="diary"&&live)poll=setInterval(loadRemote,8000);
-    if(anchor){const el=document.getElementById(anchor);if(el)setTimeout(()=>el.scrollIntoView({behavior:"smooth"}),30);}
+    if(v==="hub"){renderHub();loadRemote();}
+    clearInterval(poll);if((v==="diary"||v==="hub")&&live)poll=setInterval(loadRemote,8000);
+    if(anchor){const a=document.getElementById(anchor);if(a)setTimeout(()=>a.scrollIntoView({behavior:"smooth"}),30);}
     else window.scrollTo(0,0);
   }
   window.addEventListener("hashchange",route);
